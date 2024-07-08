@@ -8,9 +8,10 @@ const app = express();
 app.use(express.json());
 app.use('/', router);
 
-app.get('/', (res, req) => {
+app.get('/', (req, res) => {
     res.send('Backend is running!');
 });
+
 
 mongoose.connect("mongodb+srv://dxvnee:DTuzSPD1ip0vDr1C@creopediadb.cdylyrm.mongodb.net/?retryWrites=true&w=majority&appName=CreopediaDB")
     .then(() => {
