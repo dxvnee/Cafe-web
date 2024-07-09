@@ -5,7 +5,7 @@ const login = async (req, res) => {
         const { name, password } = req.body;
 
         if (!name || !password){
-            return res.send(200).json({message: 'Please enter name and password'});
+            return res.status(200).json({message: 'Please enter name and password'});
         }
         
         const currentAdmin = await Admin.findOne(
@@ -15,14 +15,14 @@ const login = async (req, res) => {
         );
         
         if(currentAdmin.password !== password){
-            res.send(200).json({message: 'Password is not match'});
+            res.status(200).json({message: 'Password is not match'});
         } else {
-            res.send(200).json({message: 'Login successfully'});
+            res.status(200).json({message: 'Login successfully'});
             res.json(currentAdmin);
         } 
 
     } catch (error) {
-        res.send(200).json({message: error.message})
+        res.status(200).json({message: error.message})
     }
 }
 
@@ -34,30 +34,52 @@ const createAdmin = async (req, res) => {
         })
 
         if (admin != null){
-            res.send(200).json({ message: "Admin already exists" });
+            res.status(200).json({ message: "Admin already exists" });
+        } else {
+            const newUser = new Admin({
+                name: name,
+                password: password            
+            })
+    
+            await newUser.save();
+            res.status(200).json({ newUser })
         }
 
-        const newUser = new Admin({
-            name: name,
-            password: password            
-        })
-
-        await newUser.save();
-        res.send(200).json({ newUser })
 
     } catch (error) {
-        res.send(200).json({message : error.message});
+        res.status(200).json({message : error.message});
+    }
+}
+const deleteAdmin = async (req, res) => {
+    try{
+        const id = req.params.id;
+
+        const deleteAdmin = await Admin.findOneAndDelete({
+            _id: id
+        })
+
+        if (deleteAdmin == null){
+            res.status(200).json({message: "Admin not found"});
+        } else {
+            res.status(200).json({
+                message: "Admin deleted successfully",
+                deleteAdmin
+            });
+        }
+
+    } catch (error){
+        res.status(200).json({message: error.message})
     }
 }
 
 const getAllAdmin = async (req, res) => {
     try {
-        const allAdmin = await Admin.find();
+        const allAdmin = await Admin.find({});
         
-        res.senda(200).json(allAdmin);
+        res.status(200).json(allAdmin);
 
     } catch (error) {
-        res.send(200).json({ message: error.message})
+        res.status(500).json({ message: error.message})
     }
 }
 
@@ -65,5 +87,6 @@ const getAllAdmin = async (req, res) => {
 export {
     login,
     createAdmin,
-    getAllAdmin
+    getAllAdmin,
+    deleteAdmin
 }
