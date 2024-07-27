@@ -50,6 +50,50 @@ const createAdmin = async (req, res) => {
         res.status(200).json({message : error.message});
     }
 }
+
+const getAdminById = async (req, res) => {
+    try {
+        const { id } = req.params;
+        
+        const admin = await Admin.findOne({
+            _id: id
+        })
+
+        res.status(200).json(admin);
+    } catch (error) {
+        res.status(200).json({message: error.message});
+    }
+}
+
+const editAdmin = async(req, res) => {
+    try{
+        const { id } = req.params;
+        const { name, password } = req.body;
+
+        const admin = await Admin.findOne({
+            _id: id
+        })
+
+        if (admin != null){
+            const editAdmin = await Admin.findOneAndUpdate(
+                {
+                    _id: id
+                },
+                {
+                    name: name,
+                    password: password
+                }
+            )
+            res.status(200).json(editAdmin);
+        } else {
+            res.status(200).json({message: "Admin not found"});
+        }
+
+    } catch(error){
+        res.status(200).json({message:error.message})
+    }
+}
+
 const deleteAdmin = async (req, res) => {
     try{
         const id = req.params.id;
@@ -88,5 +132,7 @@ export {
     login,
     createAdmin,
     getAllAdmin,
-    deleteAdmin
+    deleteAdmin,
+    editAdmin,
+    getAdminById
 }
