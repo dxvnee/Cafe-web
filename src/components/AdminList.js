@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import { getAdmin } from '../services/ApiService'
+import { getAdmin, deleteAdmin } from '../services/ApiService'
 
 const AdminList = () => {
 
@@ -16,6 +16,16 @@ const AdminList = () => {
             const data = await getAdmin();
             console.log(data);
             setAdmin(data);
+        }catch(error){
+            console.log(error);
+        }
+    }
+
+    const deleteAdmin = async(id) => {
+        try{ 
+            const deletedAdmin = await axios.delete(`http://localhost:3007/admin/${id}`);
+            console.log(deletedAdmin);
+            fetchData();
         }catch(error){
             console.log(error);
         }
@@ -39,8 +49,18 @@ const AdminList = () => {
                                 <td>{ user.name }</td>
                                 <td>{ user.password }</td>
                                 <td>
-                                    <Link to = {`edit/${user._id}`}className="button is-info is-small">Edit</Link>
-                                    <button className="button is-danger is-small">Delete</button>
+                                    <Link 
+                                        to = {`edit/${user._id}`}
+                                        className="button is-info is-small"
+                                    >Edit
+                                    </Link>
+
+                                    <button 
+                                        onClick = {() => deleteAdmin(user._id)} 
+                                        className="button is-danger is-small"
+                                    >Delete
+                                    </button>
+                                
                                 </td>
                             </tr>
                         ))}

@@ -12,8 +12,19 @@ const getAdmin = async() => {
     }
 }
 
+const deleteAdmin = async(id) => {
+    try{ 
+        const response = await axios.delete(`${API_URL}/${id}`);
+        console.log(response.data);
+        return response.data;
+    }catch(error){
+        console.log(error);
+    }
+}
+
 
 
 export {
-    getAdmin
+    getAdmin,
+    deleteAdmin
 }
